@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.29)
-project(lzdr-comp)
+cmake_minimum_required(VERSION 3.21)
+project(lzdr-comp LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+include(CTest)
 
 option(IWYU_ENABLED "Enable IWYU" OFF)
 
@@ -35,6 +35,25 @@ add_executable(
         src/cli.cpp
         src/cli.h
 )
+
+target_compile_features(lzdr-comp PRIVATE cxx_std_17)
+set_target_properties(lzdr-comp PROPERTIES CXX_EXTENSIONS OFF)
+
+if(MSVC)
+    target_compile_options(lzdr-comp PRIVATE /W4)
+    if(BUILD_TESTING)
+        set_source_files_properties(src/test.cpp PROPERTIES COMPILE_OPTIONS /UNDEBUG)
+    endif()
+else()
+    target_compile_options(lzdr-comp PRIVATE -Wall -Wextra -Wpedantic)
+    if(BUILD_TESTING)
+        set_source_files_properties(src/test.cpp PROPERTIES COMPILE_OPTIONS -UNDEBUG)
+    endif()
+endif()
+
+if(BUILD_TESTING)
+    add_test(NAME lzdr-comp-tests COMMAND lzdr-comp --test)
+endif()
 
 if(IWYU_ENABLED)
     find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)

@@ -12,9 +12,14 @@
 
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <type_traits>
+
+static_assert(!std::is_constructible_v<Slice, const std::uint8_t *>,
+              "byte slices must provide their length explicitly");
 
 void run_tests() {
 #ifdef NDEBUG

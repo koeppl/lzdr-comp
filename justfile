@@ -6,40 +6,44 @@ default:
   @just --list --unsorted
 
 [group('lzdr-comp')]
-build-debug builddir='debug':
-  @mkdir -p target/"$1"/ && cd target/"$1"/ && cmake -DCMAKE_BUILD_TYPE=Debug ../.. && make -j"$(({{num_cpus()}} > 1 ? {{num_cpus()}} - 1 : 1))"
+build-debug:
+  @cmake --preset debug && cmake --build --preset debug --parallel
 
 [group('lzdr-comp')]
-build-release builddir='release':
-  @mkdir -p target/"$1"/ && cd target/"$1"/ && cmake -DCMAKE_BUILD_TYPE=Release ../.. && make -j"$(({{num_cpus()}} > 1 ? {{num_cpus()}} - 1 : 1))"
+build-release:
+  @cmake --preset release && cmake --build --preset release --parallel
 
 [group('lzdr-comp')]
-build-release-debug builddir='release-debug':
-  @mkdir -p target/"$1"/ && cd target/"$1"/ && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-O2 -g -DNDEBUG" ../.. && make -j"$(({{num_cpus()}} > 1 ? {{num_cpus()}} - 1 : 1))"
+build-relwithdebinfo:
+  @cmake --preset relwithdebinfo && cmake --build --preset relwithdebinfo --parallel
+
+[group('lzdr-comp')]
+build-release-debug:
+  @just build-relwithdebinfo
 
 [group('lzdr-comp')]
 run-debug *ARGS: build-debug
-  @./target/debug/lzdr-comp "$@"
+  @./cmake-build/debug/lzdr-comp "$@"
 
 [group('lzdr-comp')]
 run-release *ARGS: build-release
-  @./target/release/lzdr-comp "$@"
+  @./cmake-build/release/lzdr-comp "$@"
 
 [group('lzdr-comp')]
 run-release-debug *ARGS: build-release-debug
-  @./target/release-debug/lzdr-comp "$@"
+  @./cmake-build/relwithdebinfo/lzdr-comp "$@"
 
 [group('lzdr-comp')]
 clean:
-  @rm -rf target/
+  @rm -rf cmake-build/ target/
 
 [group('lzdr-comp-dev')]
 test: build-debug
-  @./target/debug/lzdr-comp --test
+  @ctest --preset debug
 
 [group('lzdr-comp-dev')]
 iwyu:
-  @mkdir -p target/iwyu/ && cd target/iwyu/ && cmake -DCMAKE_BUILD_TYPE=Debug -DIWYU_ENABLED=ON ../.. && make -j"$(({{num_cpus()}} > 1 ? {{num_cpus()}} - 1 : 1))" && cd .. && rm -rf iwyu/
+  @cmake -S . -B cmake-build/iwyu -DCMAKE_BUILD_TYPE=Debug -DIWYU_ENABLED=ON && cmake --build cmake-build/iwyu --parallel
 
 [group('lzdr-comp-dev')]
 loc:
@@ -71,8 +75,8 @@ build-subproject-tudocomp: init-subprojects
   sed -i -E 's/ ?-march=native//' CMakeLists.txt # Replace march=native to make benchmark more comparable
   mkdir -p build/ && cd build/
   export CXXFLAGS="-std=gnu++14"
-  cmake -DCMAKE_BUILD_TYPE=Release ..
-  make -j"$(({{num_cpus()}} > 1 ? {{num_cpus()}} - 1 : 1))"
+  cmake -S .. -B . -DCMAKE_BUILD_TYPE=Release
+  cmake --build . --parallel
 
 [group('subprojects')]
 clean-subprojects:
@@ -129,11 +133,11 @@ download-pizza-chili-dataset:
 
 [group('all')]
 factor-count FILE:
-  @if [ ! -f target/release/lzdr-comp ]; then just build-release; fi
+  @if [ ! -f cmake-build/release/lzdr-comp ]; then just build-release; fi
   @if [ ! -f subprojects/lzd/out/lzd ]; then just build-subproject-lzd; fi
   @if [ ! -f subprojects/tudocomp/build/tdc ]; then just build-subproject-tudocomp; fi
   @echo lzdr-comp
-  @./target/release/lzdr-comp --factors -c < "$1" | sed 's/^/  /'
+  @./cmake-build/release/lzdr-comp --factors -c < "$1" | sed 's/^/  /'
   @echo
   @echo tudocomp
   @echo '  LZ78'

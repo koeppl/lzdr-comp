@@ -111,7 +111,7 @@ Exec.__new__.__defaults__ = (None, None) # args is required
 # Compressor Pair definition
 CompressorPair = collections.namedtuple('CompressorPair', ['name', 'compress'])
 
-def LzdrComp(name, algorithm, lzdr_comp_binary='./target/release/lzdr-comp'):
+def LzdrComp(name, algorithm, lzdr_comp_binary='./cmake-build/release/lzdr-comp'):
     return CompressorPair(name,
         compress   = Exec(args=[lzdr_comp_binary, '-a', algorithm], inp=StdIn, outp=StdOut))
 

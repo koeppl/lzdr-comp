@@ -4,17 +4,17 @@ Warning: only tested on Linux.
 
 ## Dependencies
 ### Build Dependencies
-* For lzdr-comp: CMake, Make
+* For lzdr-comp: CMake 3.21+ and a C++17 compiler
 * For lzd: SCons, clang
 * For [tudocomp](https://tudocomp.github.io/documentation/index.html#building): CMake, Make, Python 3
 
 ### Justfile Dependencies
-* Basic dependencies: just, git, jq, wget
+* Basic dependencies: just, git, jq, wget (just is optional if using CMake directly)
 * Additional dev dependencies: include-what-you-use, tokei
 
 ### Dependency Installation
 
-- Arch Linux: `pacman -S cmake make python git jq wget just scons clang valgrind`
+- Arch Linux: `pacman -S cmake gcc python git jq wget just scons clang valgrind`
 
 ## Usage
 ### Build lzdr-comp
@@ -23,17 +23,24 @@ Release mode:
 just build-release
 ```
 
+Or configure and build directly with CMake:
+```
+cmake --preset release
+cmake --build --preset release --parallel
+```
+
 Debug mode:
 ```
 just build-debug
 ```
 
-Executables are located at `target/release/lzdr-comp` and `target/debug/lzdr-comp` after the build process.
+Executables are located at `cmake-build/release/lzdr-comp` and `cmake-build/debug/lzdr-comp` after the build process.
+Run the test suite with `ctest --preset debug` (or `just test`). The presets also include `relwithdebinfo`.
 
 - The executables expect input to parse from `<STDIN>`
 - To compute the number of factors of all implemented algorithms, run one of the executables with parameter `--factors`
 - To restrict the computation to LZD+/LZDR, run with `-a [lzd+|lzdr]` (you need to write lzd or lzd+ in lower case)
-- `target/debug/lzdr-comp` also outputs verbosely the constructed factors
+- The Debug executable also outputs verbosely the constructed factors
 
 ### Build subprojects
 Build lzd and tudocomp:

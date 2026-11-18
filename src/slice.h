@@ -19,8 +19,7 @@ public:
     Slice(const uint8_t *data, const size_t length) : internal_data(data), internal_length(length) {
     }
 
-    explicit Slice(const uint8_t *data) : internal_data(data), internal_length(sizeof(data)) {
-    }
+    explicit Slice(const uint8_t *data) = delete;
 
     explicit Slice(const std::vector<uint8_t> &vec) : internal_data(vec.data()), internal_length(vec.size()) {
     }
