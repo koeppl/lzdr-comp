@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 """
-Modified from tudocomp etc/compare.py
+Modified from tudocomp [https://github.com/tudocomp/tudocomp] etc/compare.py
+Licensed under the Apache License, Version 2.0
 """
 import argparse
 import collections

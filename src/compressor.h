@@ -56,13 +56,4 @@ struct NextFactorResult2 {
     Slice insertion_slice;
 };
 
-struct NextFactorResultTime {
-    Slice factor_slice;
-    std::vector<uint8_t> compressed_data;
-    uint64_t combination_search_first_microseconds;
-    uint64_t combination_search_second_microseconds;
-    uint64_t truncation_search_microseconds;
-    uint64_t repetition_search_microseconds;
-};
-
 #endif //COMPRESSOR_H

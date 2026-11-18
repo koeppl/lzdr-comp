@@ -28,6 +28,9 @@ namespace {
         std::cout << "  --test\n      Run tests" << std::endl;
         std::cout << std::endl;
         std::cout << "  --help\n      Show help" << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << "The input is read from stdin." << std::endl;
     }
 
     void run_algo(const char* algo, const std::vector<uint8_t> &data, const bool check_decompressed_equals_input) {
@@ -36,7 +39,7 @@ namespace {
             const size_t lzdr_linear_time_num_factors = lzdr_linear_time(Slice(data), check_decompressed_equals_input);
             std::cout << "Num factors: " << lzdr_linear_time_num_factors << std::endl;
         } else if (strcmp(algo, "lzd+") == 0) {
-            std::cout << "LZD+ (linear time)" << std::endl;
+            std::cout << "LZD+ (linear-time)" << std::endl;
             const size_t lzd_plus_linear_time_num_factors = lzd_plus_linear_time(Slice(data), check_decompressed_equals_input);
             std::cout << "Num factors: " << lzd_plus_linear_time_num_factors << std::endl;
         } else {
@@ -70,7 +73,7 @@ namespace {
 
         std::cout << std::endl;
 
-        std::cout << "LZD+ (linear time)" << std::endl;
+        std::cout << "LZD+ (linear-time)" << std::endl;
         const size_t lzd_plus_linear_time_num_factors = lzd_plus_linear_time(Slice(data), check_decompressed_equals_input);
         std::cout << "Num factors: " << lzd_plus_linear_time_num_factors << std::endl;
 

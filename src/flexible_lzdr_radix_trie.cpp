@@ -43,7 +43,7 @@ size_t flexible_lzdr_radix_trie(const Slice input, const bool check_decompressed
             NextFactorResult next_factor = lzdr_linear_time_internal::next_longest_factor_counted_trie(
                 input, i, rest_input, truncated_rest_input.size(), previous_factors);
 
-            // If this length cannot be represented by a factor, continue
+            // If this length cannot be represented by a factor, throw error
             if (truncated_rest_input.size() != next_factor.factor_slice.size()) {
                 throw std::runtime_error("Cannot be represented by a factor");
             }

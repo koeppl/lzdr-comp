@@ -4,6 +4,9 @@
 #include "std_flexible_lzw_naive.h"
 #include "std_flexible_lzdr_radix_trie.h"
 #include "flexible_lzdr_radix_trie.h"
+#include "flexible_lzdr_max_radix_trie.h"
+#include "lzd_plus_linear_time.h"
+#include "lzd_radix_tree.h"
 #include "radix_trie.h"
 #include "slice.h"
 
@@ -13,8 +16,6 @@
 #include <iostream>
 #include <string>
 
-#include "lzd_radix_tree.h"
-
 void run_tests() {
 #ifdef NDEBUG
     std::cerr << "Tests have to be run in debug mode" << std::endl;
@@ -23,7 +24,7 @@ void run_tests() {
 
     // LZDR test case from my example
     constexpr char input_1[] = "abcdabababefababababababababghababacdabi";
-    std::cout << "LZDR (linear-time)" << std::endl;
+    std::cout << "LZDR (radix trie)" << std::endl;
     const size_t lzdr_linear_time_num_factors = lzdr_linear_time(Slice(input_1), true);
     std::cout << "Num factors: " << lzdr_linear_time_num_factors << std::endl;
     assert(lzdr_linear_time_num_factors == 9);
@@ -169,6 +170,59 @@ void run_tests() {
     const size_t std_flexible_lzdr_radix_trie_num_factors2 = std_flexible_lzdr_radix_trie(Slice(input_10), true);
     std::cout << "Num factors: " << std_flexible_lzdr_radix_trie_num_factors2 << std::endl;
     assert(std_flexible_lzdr_radix_trie_num_factors2 == 7);
+
+    std::cout << std::endl;
+
+    // Test LZD+
+    constexpr char input_11[] = "aabbaabbbaabbbbbababaabccccbababc";
+    std::cout << "LZD+ (linear-time)" << std::endl;
+    const size_t lzdp_linear_time_num_factors = lzd_plus_linear_time(Slice(input_11), true);
+    std::cout << "Num factors: " << lzdp_linear_time_num_factors << std::endl;
+    assert(lzdp_linear_time_num_factors == 11);
+
+    std::cout << std::endl;
+
+    std::cout << "LZDR (radix trie)" << std::endl;
+    const size_t lzdr_linear_time_num_factors7 = lzdr_linear_time(Slice(input_11), true);
+    std::cout << "Num factors: " << lzdr_linear_time_num_factors7 << std::endl;
+    assert(lzdr_linear_time_num_factors7 == 10);
+
+    std::cout << std::endl;
+
+    std::cout << "LZD (radix trie)" << std::endl;
+    const size_t lzd_radix_tree_num_factors4 = lzd_radix_tree(Slice(input_11), true);
+    std::cout << "Num factors: " << lzd_radix_tree_num_factors4 << std::endl;
+    assert(lzd_radix_tree_num_factors4 == 12);
+
+    std::cout << std::endl;
+
+    // Test Alternative Flexible LZDR Max.
+    constexpr char input_12[] = "aaababaaaaaabaaab";
+    std::cout << "LZDR (radix trie)" << std::endl;
+    const size_t lzdr_linear_time_num_factors8 = lzdr_linear_time(Slice(input_12), true);
+    std::cout << "Num factors: " << lzdr_linear_time_num_factors8 << std::endl;
+    assert(lzdr_linear_time_num_factors8 == 6);
+
+    std::cout << std::endl;
+
+    std::cout << "Standard Flexible LZDR (radix trie)" << std::endl;
+    const size_t std_flexible_lzdr_radix_trie_num_factors3 = std_flexible_lzdr_radix_trie(Slice(input_12), true);
+    std::cout << "Num factors: " << std_flexible_lzdr_radix_trie_num_factors3 << std::endl;
+    assert(std_flexible_lzdr_radix_trie_num_factors3 == 5);
+
+    std::cout << std::endl;
+
+    std::cout << "Alternative Flexible LZDR (radix trie)" << std::endl;
+    const size_t flexible_lzdr_radix_trie_num_factors4 = flexible_lzdr_radix_trie(Slice(input_12), true);
+    std::cout << "Num factors: " << flexible_lzdr_radix_trie_num_factors4 << std::endl;
+    assert(flexible_lzdr_radix_trie_num_factors4 == 5);
+
+    std::cout << std::endl;
+
+    std::cout << "Alternative Flexible LZDR Max. (radix trie)" << std::endl;
+    const size_t flexible_lzdr_max_radix_trie_num_factors = flexible_lzdr_max_radix_trie(Slice(input_12));
+    std::cout << "Num factors: " << flexible_lzdr_max_radix_trie_num_factors << std::endl;
+    assert(flexible_lzdr_max_radix_trie_num_factors == 5);
 
     std::cout << std::endl;
 
