@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Modified from tudocomp etc/compare.py
 """
