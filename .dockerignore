@@ -1,0 +1,11 @@
+.git
+**/.git
+**/.git/**
+datasets/
+**/cmake-build/
+**/target/
+**/build/
+subprojects/lzd/out/
+subprojects/lzd/.sconsign*
+**/__pycache__/
+benchmark-results/

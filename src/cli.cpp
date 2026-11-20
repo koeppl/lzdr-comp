@@ -23,7 +23,9 @@ namespace {
         std::cout << std::endl;
         std::cout << "  -c\n      Check decompressing compressed output equals input\n      (not available for LZW variants and Alternative Flexible LZDR Max.)" << std::endl;
         std::cout << std::endl;
-        std::cout << "  -a <ALGO_NAME>\n      Run single algorithm\n      (available: lzdr, lzd+)" << std::endl;
+        std::cout << "  -a <ALGO_NAME>\n      Run single algorithm\n"
+                  << "      (available: lzdr, lzdr-std-flex, lzdr-alt-flex, lzdr-max-alt, lzd+, lzd, lzw-std-flex, lzw-alt-flex)"
+                  << std::endl;
         std::cout << std::endl;
         std::cout << "  --test\n      Run tests" << std::endl;
         std::cout << std::endl;
@@ -38,10 +40,34 @@ namespace {
             std::cout << "LZDR (radix trie)" << std::endl;
             const size_t lzdr_linear_time_num_factors = lzdr_linear_time(Slice(data), check_decompressed_equals_input);
             std::cout << "Num factors: " << lzdr_linear_time_num_factors << std::endl;
+        } else if (strcmp(algo, "lzdr-std-flex") == 0) {
+            std::cout << "Standard Flexible LZDR (radix trie)" << std::endl;
+            const size_t num_factors = std_flexible_lzdr_radix_trie(Slice(data), check_decompressed_equals_input);
+            std::cout << "Num factors: " << num_factors << std::endl;
+        } else if (strcmp(algo, "lzdr-alt-flex") == 0) {
+            std::cout << "Alternative Flexible LZDR (radix trie)" << std::endl;
+            const size_t num_factors = flexible_lzdr_radix_trie(Slice(data), check_decompressed_equals_input);
+            std::cout << "Num factors: " << num_factors << std::endl;
+        } else if (strcmp(algo, "lzdr-max-alt") == 0) {
+            std::cout << "Alternative Flexible LZDR Max. (radix trie)" << std::endl;
+            const size_t num_factors = flexible_lzdr_max_radix_trie(Slice(data));
+            std::cout << "Num factors: " << num_factors << std::endl;
         } else if (strcmp(algo, "lzd+") == 0) {
             std::cout << "LZD+ (linear-time)" << std::endl;
             const size_t lzd_plus_linear_time_num_factors = lzd_plus_linear_time(Slice(data), check_decompressed_equals_input);
             std::cout << "Num factors: " << lzd_plus_linear_time_num_factors << std::endl;
+        } else if (strcmp(algo, "lzd") == 0) {
+            std::cout << "LZD (radix trie)" << std::endl;
+            const size_t num_factors = lzd_radix_tree(Slice(data), check_decompressed_equals_input);
+            std::cout << "Num factors: " << num_factors << std::endl;
+        } else if (strcmp(algo, "lzw-std-flex") == 0) {
+            std::cout << "Standard Flexible LZW (naive)" << std::endl;
+            const size_t num_factors = std_flexible_lzw_naive(Slice(data));
+            std::cout << "Num factors: " << num_factors << std::endl;
+        } else if (strcmp(algo, "lzw-alt-flex") == 0) {
+            std::cout << "Alternative Flexible LZW (naive)" << std::endl;
+            const size_t num_factors = flexible_lzw_naive(Slice(data));
+            std::cout << "Num factors: " << num_factors << std::endl;
         } else {
             std::cout << "The algorithm \"" << algo << "\" is not implemented right now." << std::endl;
             std::exit(1);
